@@ -1,13 +1,24 @@
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 function Search() {
+  const dispatch = useDispatch();
 
+  // value entered in search input
   const [searchTerm, setSearchTerm] = useState('');
 
+  // runs when Submit clicked
   let handleSubmit = (event) => {
+    // prevent default page refresh
     event.preventDefault();
 
-    console.log('Submit clicked');
+    // console.log('Submit clicked');
+
+    // send searchTerm to fetchSearchGifs saga
+    dispatch({ type: 'FETCH_SEARCH_GIFS', payload: searchTerm });
+
+    // clear the input
+    setSearchTerm('');
   }
 
   return(
