@@ -8,6 +8,7 @@ import logger from 'redux-logger';
 // for sagas:
 import createSagaMiddleware from 'redux-saga';
 import { takeEvery } from 'redux-saga/effects';
+import axios from 'axios';
 
 // SAGAS:
 
@@ -15,15 +16,19 @@ function* rootSaga() {
     yield takeEvery('FETCH_SEARCH_GIFS', fetchSearchGifs);
 }
 
+// send value from search form's input to server
+// server will query Giphy API Search Endpoint
+// save response from server to searchResults reducer
 function* fetchSearchGifs(action) {
     try {
-        console.log('In fetchSearchGifs saga; payload is:', action.payload);
+        // console.log('In fetchSearchGifs saga; payload is:', action.payload);
+        const results = yield axios.get(`/api/giphy/${action.payload}`);
+        console.log('result from server:', results);
+        // yield put({ type: 'SET_SEARCH_RESULTS', payload: results.data });
     } catch (error) {
         console.log('Error fetching search gifs:', error);
     }
 }
-
-const sagaMiddleware = createSagaMiddleware();
 
 // REDUCERS:
 
@@ -36,6 +41,8 @@ const searchResults = (state = [], action) => {
             return state;
     }
 }
+
+const sagaMiddleware = createSagaMiddleware();
 
 const storeInstance = createStore(
     combineReducers({
